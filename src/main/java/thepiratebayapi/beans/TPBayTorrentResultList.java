@@ -7,6 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by Romain on 01/02/2018.
  */
+@SuppressWarnings("serial")
 public class TPBayTorrentResultList extends ArrayList<TPBayTorrentResult> {
     private static String TORRENT_RESULTS_SELECTOR = "#searchResult tbody tr";
 

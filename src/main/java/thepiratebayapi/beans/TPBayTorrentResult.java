@@ -7,17 +7,17 @@ import org.jsoup.select.Elements;
  * Created by Romain on 01/02/2018.
  */
 public class TPBayTorrentResult {
-    private String description;
+    protected String description;
 
-    private Integer leechers;
+    protected Integer leechers;
 
-    private String name;
+    protected String name;
 
-    private Integer seeders;
+    protected Integer seeders;
 
-    private String url;
+    protected String url;
 
-    private String user;
+    protected String user;
 
     protected TPBayTorrentResult() {
 
@@ -30,7 +30,7 @@ public class TPBayTorrentResult {
         if (userElements != null && !userElements.isEmpty()) {
             user = userElements.first().text();
         }
-        url = el.select(".detName a").first().attr("href");
+        url = el.select(".detName a").first().absUrl("href");
         seeders = Integer.valueOf(el.select("td").get(2).text());
         leechers = Integer.valueOf(el.select("td").get(3).text());
     }

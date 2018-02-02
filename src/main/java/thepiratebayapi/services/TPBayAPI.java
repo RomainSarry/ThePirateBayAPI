@@ -6,6 +6,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import thepiratebayapi.beans.TPBayPage;
+import thepiratebayapi.beans.TPBayTorrent;
 import thepiratebayapi.beans.TPBayTorrentResult;
 import thepiratebayapi.beans.TPBayTorrentResultList;
 
@@ -18,9 +19,12 @@ import java.util.Map;
  * Created by Romain on 01/02/2018.
  */
 public class TPBayAPI {
+	private String urlBase;
+	
     private String urlSearch;
 
     public TPBayAPI(String urlBase) {
+    	this.urlBase = urlBase;
         urlSearch = urlBase + "/s/";
     }
 
@@ -41,6 +45,14 @@ public class TPBayAPI {
     public TPBayTorrentResultList searchTorrents(String query, Map<String, Serializable> parameters) {
         parameters.put("q", query);
         return new TPBayTorrentResultList(getPageByUrl(urlSearch + "?" + getParamsAsString(parameters)));
+    }
+    
+    public TPBayTorrent getTorrent(String url) {
+    	return new TPBayTorrent(getPageByUrl(url));
+    }
+    
+    public TPBayTorrent getTorrent(TPBayTorrentResult torrentResult) {
+    	return getTorrent(torrentResult.getUrl());
     }
 
     private String getParamsAsString(Map<String, Serializable> parameters) {
