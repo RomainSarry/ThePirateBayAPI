@@ -14,11 +14,15 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Romain on 01/02/2018.
  */
 public class TPBayAPI {
+    private static final Logger LOGGER = Logger.getLogger(TPBayAPI.class.getName());
+
 	private String urlBase;
 	
     private String urlSearch;
@@ -32,7 +36,6 @@ public class TPBayAPI {
         Document htmlDom = null;
 
         try {
-            System.out.println("Fetching URL : " + url);
             htmlDom = Jsoup.connect(url).get();
         }
         catch (Exception e) {
@@ -44,10 +47,13 @@ public class TPBayAPI {
 
     public TPBayTorrentResultList searchTorrents(String query, Map<String, Serializable> parameters) {
         parameters.put("q", query);
-        return new TPBayTorrentResultList(getPageByUrl(urlSearch + "?" + getParamsAsString(parameters)));
+        String url = urlSearch + "?" + getParamsAsString(parameters);
+        LOGGER.log(Level.INFO, "Searching torrents : " + url);
+        return new TPBayTorrentResultList(getPageByUrl(url));
     }
     
     public TPBayTorrent getTorrent(String url) {
+        LOGGER.log(Level.INFO, "Fetching torrent : " + url);
     	return new TPBayTorrent(getPageByUrl(url));
     }
     
