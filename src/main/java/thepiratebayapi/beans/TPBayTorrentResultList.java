@@ -12,8 +12,10 @@ public class TPBayTorrentResultList extends ArrayList<TPBayTorrentResult> {
     private static String TORRENT_RESULTS_SELECTOR = "#searchResult tbody tr";
 
     public TPBayTorrentResultList(TPBayPage page) {
-        for (Element el : page.getFields(TORRENT_RESULTS_SELECTOR)) {
-            add(new TPBayTorrentResult(el));
+        if (page != null) {
+            for (Element el : page.getFields(TORRENT_RESULTS_SELECTOR)) {
+                add(new TPBayTorrentResult(el));
+            }
         }
     }
 }
