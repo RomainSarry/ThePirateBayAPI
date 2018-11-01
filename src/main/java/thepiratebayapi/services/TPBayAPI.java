@@ -1,63 +1,55 @@
 package thepiratebayapi.services;
 
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
 import thepiratebayapi.beans.TPBayPage;
 import thepiratebayapi.beans.TPBayTorrent;
-import thepiratebayapi.beans.TPBayTorrentResult;
 import thepiratebayapi.beans.TPBayTorrentResultList;
-
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import thepiratebayapi.exceptions.TPBayURLException;
 
 /**
  * Created by Romain on 01/02/2018.
  */
 public class TPBayAPI {
-    private static final Logger LOGGER = Logger.getLogger(TPBayAPI.class.getName());
-
-	private String urlBase;
 	
-    private String urlSearch;
+	private String urlString;
 
-    public TPBayAPI(String urlBase) {
-    	this.urlBase = urlBase;
-        urlSearch = urlBase + "/s/";
+    public TPBayAPI(String urlString) {
+    	this.urlString = urlString;
     }
 
-    private static TPBayPage getPageByUrl(String url) {
+    private static TPBayPage getPageByUrl(String url) throws TPBayURLException {
         Document htmlDom = null;
 
         try {
             htmlDom = Jsoup.connect(url).get();
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw new TPBayURLException(url);
         }
 
         return new TPBayPage(htmlDom);
     }
 
-    public TPBayTorrentResultList searchTorrents(String query, Map<String, Serializable> parameters) {
+    public List<TPBayTorrent> searchTorrents(String query, Map<String, Serializable> parameters) throws TPBayURLException {
         parameters.put("q", query);
-        String url = urlSearch + "?" + getParamsAsString(parameters);
-        LOGGER.log(Level.INFO, "Searching torrents : " + url);
-        return new TPBayTorrentResultList(getPageByUrl(url));
+        TPBayPage page = getPageByUrl(urlString + "/s/?" + getParamsAsString(parameters));
     }
     
     public TPBayTorrent getTorrent(String url) {
-        LOGGER.log(Level.INFO, "Fetching torrent : " + url);
     	return new TPBayTorrent(getPageByUrl(url));
     }
     
-    public TPBayTorrent getTorrent(TPBayTorrentResult torrentResult) {
+    public TPBayTorrent getTorrent(TPBayTorrent torrentResult) {
     	return getTorrent(torrentResult.getUrl());
     }
 
