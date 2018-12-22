@@ -1,11 +1,5 @@
 package thepiratebayapi.services;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import io.dropwizard.util.Size;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -13,7 +7,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import thepiratebayapi.beans.TPBayPage;
@@ -23,6 +16,10 @@ import thepiratebayapi.exceptions.TPBayParametersException;
 import thepiratebayapi.exceptions.TPBayTorrentFetchingException;
 import thepiratebayapi.exceptions.TPBayTorrentSearchException;
 import thepiratebayapi.exceptions.TPBayURLException;
+
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Romain on 01/02/2018.
@@ -60,7 +57,11 @@ public class TPBayAPI {
         try {
             TPBaySearchResults torrents = new TPBaySearchResults();
 
+            if (parameters == null) {
+                parameters = new HashMap<>();
+            }
             parameters.put("q", query);
+
             TPBayPage page = getPage(urlString + "/s/?" + getParamsAsString(parameters));
 
             for (Element torrentContent : page.getFields(TPBaySearchResults.TORRENT_RESULTS_SELECTOR)) {
