@@ -67,7 +67,16 @@ public class TPBayAPI {
             for (Element torrentContent : page.getFields(TPBaySearchResults.TORRENT_RESULTS_SELECTOR)) {
                 String name = torrentContent.select(TPBaySearchResults.TORRENT_NAME_SELECTOR).first().text();
                 String[] description = torrentContent.select(TPBaySearchResults.TORRENT_DESCRIPTION_SELECTOR).first().text().split(", ");
-                Date uploaded = searchFormatter.parse(description[0].replaceAll("\u00a0", "-"));
+                Date uploaded;
+                if (description[0].contains("Today"))  {
+                    uploaded = new Date();
+                } else if (description[0].contains("Y-day")) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.DATE, -1);
+                    uploaded = cal.getTime();
+                } else {
+                    uploaded = searchFormatter.parse(description[0].replaceAll("\u00a0", "-"));
+                }
                 String sizeString = description[1].split("\\s+")[1].replace("\u00a0", " ");
 
                 Elements userElements = torrentContent.select(TPBaySearchResults.TORRENT_USER_SELECTOR);
